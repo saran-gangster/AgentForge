@@ -1,0 +1,135 @@
+{% extends "base.html" %}
+{% block content %}
+
+<section>
+  <h3>Analyze</h3>
+  <form hx-post="/analyze" hx-target="#results" hx-swap="innerHTML" hx-ext="loading-states">
+    <label>
+      Prompt
+      <textarea name="prompt" rows="4" placeholder="Describe the analysis to run..."></textarea>
+    </label>
+
+    <label>
+      Dataset
+      <select name="dataset_id" id="datasetSelect">
+        {% for d in datasets %}
+          <option value="{{ d.id }}">{{ d.name }}</option>
+        {% endfor %}
+      </select>
+    </label>
+
+    <fieldset>
+      <legend>Brain (LoRA)</legend>
+      <div id="loras">
+        {% include "partials/loras.html" %}
+      </div>
+    </fieldset>
+
+    <label title="If the plan fails lint or execution, use a curated code snippet to complete the task.">
+      <input type="checkbox" name="use_golden">
+      Use golden snippet fallback if needed
+    </label>
+
+    <div class="actions">
+      <button type="submit" class="contrast">Analyze</button>
+      <button type="button" hx-get="/datasets/refresh" hx-target="#datasets-panel" hx-swap="innerHTML">Refresh Datasets</button>
+    </div>
+  </form>
+
+  <details open>
+    <summary>Available Datasets</summary>
+    <div class="grid">
+      <div>
+        <div id="datasets-panel">
+          {% include "partials/datasets.html" %}
+        </div>
+        <details>
+          <summary>Upload Dataset</summary>
+          <form hx-post="/datasets/upload" hx-target="#datasets-panel" hx-swap="innerHTML" hx-encoding="multipart/form-data">
+            <label>
+              Display Name (optional)
+              <input name="name" placeholder="e.g., Marketing Q4.csv">
+            </label>
+            <label>
+              File (.csv, .jsonl, .json)
+              <input type="file" name="file" required>
+            </label>
+            <button type="submit">Upload</button>
+          </form>
+        </details>
+      </div>
+      <div>
+        <div id="dataset-preview">
+          <em>Click Preview to see the first rows.</em>
+        </div>
+      </div>
+    </div>
+  </details>
+</section>
+
+<hr />
+
+<section>
+  <h3>Results</h3>
+  <div id="results">
+    <article>
+      <p>Submit an analysis to see structured plans, lint feedback, and artifacts here.</p>
+    </article>
+  </div>
+</section>
+
+<hr />
+
+<section>
+  <h3>Train New Specialist</h3>
+  <form hx-post="/train" hx-target="#training-status" hx-swap="innerHTML">
+    <label>Specialist Name
+      <input name="specialist_name" placeholder="marketing_analyst_v1" required>
+    </label>
+    <label>Dataset
+      <select name="dataset_id">
+        {% for d in datasets %}
+          <option value="{{ d.id }}">{{ d.name }}</option>
+        {% endfor %}
+      </select>
+    </label>
+    <label>Base Model
+      <input name="base_model" value="meta-llama/Meta-Llama-3-8B-Instruct">
+    </label>
+    <button type="submit">Start Training</button>
+  </form>
+  <div id="training-status"></div>
+</section>
+
+<hr />
+
+<section>
+  <h3>Tool Registry</h3>
+  <div class="grid">
+    <div>
+      <label>Filter tools
+        <input id="tool-filter" placeholder="Type to filter tools by name/desc">
+      </label>
+      <div id="tools-panel">
+        {% include "partials/tools.html" %}
+      </div>
+      <details>
+        <summary>Add Tool</summary>
+        <form hx-post="/tools/add" hx-target="#tools-panel" hx-swap="innerHTML">
+          <label>Tool Name
+            <input name="name" placeholder="moving_average" required>
+          </label>
+          <label>Description
+            <input name="desc" placeholder="Compute rolling mean" />
+          </label>
+          <label>Code (Python)
+            <textarea name="code" rows="8" placeholder="def moving_average(series, window=3): ..."></textarea>
+          </label>
+          <button type="submit">Register Tool</button>
+        </form>
+      </details>
+    </div>
+  </div>
+</section>
+
+{% endblock %}

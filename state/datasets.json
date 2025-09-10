@@ -1,0 +1,10 @@
+{
+  "sales_q3": {
+    "name": "Sales Q3.jsonl",
+    "path": "./data/Sales Q3.jsonl"
+  },
+  "ad_spend_q3": {
+    "name": "Ad Spend Q3.jsonl",
+    "path": "./data/Ad Spend Q3.jsonl"
+  }
+}

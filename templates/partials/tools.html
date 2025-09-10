@@ -1,0 +1,16 @@
+{% if message %}<mark>{{ message }}</mark>{% endif %}
+<table id="tools-table">
+  <thead>
+    <tr><th>Name</th><th>Description</th></tr>
+  </thead>
+  <tbody>
+    {% for t in tools %}
+      <tr>
+        <td><code>{{ t.name }}</code></td>
+        <td>{{ t.desc or "" }}</td>
+      </tr>
+    {% else %}
+      <tr><td colspan="2">No tools registered.</td></tr>
+    {% endfor %}
+  </tbody>
+</table>

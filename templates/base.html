@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>AgentForge UI</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <!-- Pico.css for simple, clean defaults -->
+  <link rel="stylesheet" href="https://unpkg.com/@picocss/pico@2.0.6/css/pico.min.css">
+  <!-- HTMX -->
+  <script src="https://unpkg.com/htmx.org@1.9.12"></script>
+  <!-- HTMX extensions -->
+  <script src="https://unpkg.com/htmx.org/dist/ext/loading-states.js"></script>
+  <script src="https://unpkg.com/htmx.org/dist/ext/sse.js"></script>
+  <link rel="stylesheet" href="/static/style.css">
+  <script defer src="/static/main.js"></script>
+</head>
+<body>
+  <header class="container">
+    <hgroup>
+      <h1>AgentForge</h1>
+      <p>Specialist Agent Platform</p>
+    </hgroup>
+  </header>
+
+  <main class="container">
+    {% block content %}{% endblock %}
+  </main>
+
+  <footer class="container">
+    <small>AgentForge v1.0 — Flask UI</small>
+  </footer>
+</body>
+</html>

@@ -1,0 +1,71 @@
+{% set plan = resp.get("plan", {}) if resp else {} %}
+{% set lint = resp.get("lint", {}) if resp else {} %}
+{% set exec = resp.get("execution", {}) if resp else {} %}
+<article>
+  <header><strong>Analysis Plan</strong></header>
+  {% if plan %}
+    <details open>
+      <summary>Reasoning</summary>
+      <pre>{{ plan.get("reasoning","") }}</pre>
+    </details>
+    <details>
+      <summary>Python Code</summary>
+      <div class="code-actions">
+        <button type="button" class="secondary copy-btn" data-copy-target="#plan-code">Copy code</button>
+      </div>
+      <pre><code id="plan-code">{{ plan.get("python_code","") }}</code></pre>
+    </details>
+    <p><strong>Expected Artifacts:</strong> {{ (plan.get("expected_artifacts") or []) | join(", ") }}</p>
+  {% else %}
+    <p>No plan returned.</p>
+  {% endif %}
+</article>
+
+<article>
+  <header><strong>Linter</strong></header>
+  {% if lint.get("ok") %}
+    <p>✅ {{ lint.get("message") }}</p>
+  {% else %}
+    <p>❌ {{ lint.get("message") }}</p>
+    {% if lint.get("violations") %}
+      <details open>
+        <summary>Violations</summary>
+        <ul>
+          {% for v in lint.get("violations") %}
+            <li><code>{{ v }}</code></li>
+          {% endfor %}
+        </ul>
+      </details>
+    {% endif %}
+  {% endif %}
+</article>
+
+<article>
+  <header><strong>Execution</strong></header>
+  {% if exec.get("stdout") %}<details open><summary>stdout</summary><pre>{{ exec.get("stdout") }}</pre></details>{% endif %}
+  {% if exec.get("stderr") %}<details open><summary>stderr</summary><pre>{{ exec.get("stderr") }}</pre></details>{% endif %}
+
+  {% if exec.get("artifacts") %}
+    <div class="grid">
+      {% for a in exec.get("artifacts") %}
+        {% if a.type == "image" %}
+          <figure>
+            <img src="data:image/png;base64,{{ a.b64 }}" alt="{{ a.name }}" />
+            <figcaption>{{ a.name }}</figcaption>
+          </figure>
+        {% elif a.type == "table" %}
+          <pre>{{ a.data | tojson(indent=2) }}</pre>
+        {% else %}
+          <pre>{{ a | tojson(indent=2) }}</pre>
+        {% endif %}
+      {% endfor %}
+    </div>
+  {% endif %}
+</article>
+
+{% if resp and resp.get("errors") %}
+  <article>
+    <header><strong>Errors</strong></header>
+    <pre>{{ resp.get("errors") | tojson(indent=2) }}</pre>
+  </article>
+{% endif %}

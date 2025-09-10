@@ -1,0 +1,27 @@
+<article>
+  <header><strong>Preview: {{ dataset_id }}</strong> <small>rows={{ preview.count }}</small></header>
+  {% if preview.rows and preview.columns %}
+    <div class="overflow">
+      <table>
+        <thead>
+          <tr>
+            {% for c in preview.columns %}
+              <th>{{ c }}</th>
+            {% endfor %}
+          </tr>
+        </thead>
+        <tbody>
+          {% for row in preview.rows %}
+            <tr>
+              {% for c in preview.columns %}
+                <td>{{ row.get(c) }}</td>
+              {% endfor %}
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  {% else %}
+    <p>No data to preview.</p>
+  {% endif %}
+</article>

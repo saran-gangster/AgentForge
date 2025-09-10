@@ -1,0 +1,11 @@
+{% if message %}<mark>{{ message }}</mark>{% endif %}
+<ul>
+  {% for d in datasets %}
+    <li>
+      {{ d.name }} <small>(id={{ d.id }})</small>
+      <button type="button" class="secondary outline" hx-get="/datasets/preview/{{ d.id }}" hx-target="#dataset-preview" hx-swap="innerHTML">Preview</button>
+    </li>
+  {% else %}
+    <li>No datasets found.</li>
+  {% endfor %}
+</ul>

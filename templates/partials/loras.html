@@ -1,0 +1,8 @@
+{% for l in loras %}
+  <label>
+    <input type="radio" name="lora_name" value="{{ l }}" {% if loop.first %}checked{% endif %}>
+    {{ l }}
+  </label>
+{% else %}
+  <p>No brains available.</p>
+{% endfor %}

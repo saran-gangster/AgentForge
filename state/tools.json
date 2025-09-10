@@ -1,0 +1,17 @@
+[
+  {
+    "name": "moving_average",
+    "desc": "Compute simple rolling mean",
+    "code": "import pandas as pd\ndef moving_average(series, window=3):\n    return pd.Series(series).rolling(window).mean().tolist()\n"
+  },
+  {
+    "name": "zscore",
+    "desc": "Compute z-score for a series",
+    "code": "import math\ndef zscore(values):\n    vals = list(values)\n    n = len(vals)\n    if n == 0:\n        return []\n    mean = sum(vals)/n\n    var = sum((x-mean)**2 for x in vals)/n\n    sd = math.sqrt(var)\n    return [0.0 if sd==0 else (x-mean)/sd for x in vals]\n"
+  },
+  {
+    "name": "sum2",
+    "desc": "add two numbers",
+    "code": "def sum2(a,b): return a+b"
+  }
+]

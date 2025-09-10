@@ -1,0 +1,24 @@
+<article>
+  <header><strong>Training: {{ job_id }}</strong></header>
+  <p>Status: <strong id="status-value">{{ status }}</strong></p>
+
+  <details open>
+    <summary>Logs</summary>
+    <pre id="training-logs">
+{% if logs %}{% for line in logs %}{{ line }}
+{% endfor %}{% endif %}
+    </pre>
+  </details>
+
+  <!-- Auto SSE connection with HTMX SSE extension -->
+  <div hx-ext="sse" sse-connect="/events?job_id={{ job_id }}">
+    <!-- Append incoming log lines into the pre -->
+    <div sse-swap="log" hx-target="#training-logs" hx-swap="beforeend"></div>
+    <!-- Replace the status value on status updates -->
+    <div sse-swap="status" hx-target="#status-value" hx-swap="outerHTML"></div>
+    <!-- On completion, do one final refresh to capture any last state and close SSE -->
+    <div hx-get="/train/status/{{ job_id }}" hx-trigger="sse:done once" hx-target="#training-status" hx-swap="innerHTML"></div>
+    <!-- Also refresh the Brain (LoRA) list so the new specialist appears -->
+    <div hx-get="/loras/refresh" hx-trigger="sse:done once" hx-target="#loras" hx-swap="innerHTML"></div>
+  </div>
+</article>
